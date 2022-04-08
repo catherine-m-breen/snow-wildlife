@@ -1,0 +1,39 @@
+import xarray as xr
+import numpy as np
+import pandas as pd
+import os
+import glob
+import gdal
+import matplotlib as plt
+import shutil
+import numpy as np
+import pandas as pd
+import os
+import glob
+import datetime
+import ee
+
+from google.colab import drive
+drive.mount('/content/drive', force_remount=True)
+
+os.chdir('/content/drive/My Drive/2020 Fieldwork Norway/NINA Data/seNorge_Met_daily') ## 
+
+sd_dir = '/content/drive/My Drive/2020 Fieldwork Norway/NINA Data/seNorge_Met_daily' ## upload path
+
+#modis_searchDir = os.path.normpath(modis_dir)
+
+# Search specified directory for HDF files
+sd_file_list = glob.glob('*.bil', recursive=True)
+
+print('Found {} senorge sd files in "{}"'.format(len(sd_file_list),sd_dir))
+
+######## converting from hdf to geotiff
+for bil_file in sd_file_list:
+   # bil_ds = gdal.Open(bil_file, gdal.GA_ReadOnly)
+    #subdatasets = bil_ds.GetSubDatasets()
+   # print(subdatasets)
+    geotiff_file = bil_file[:-3] + 'tif'
+    gdal_translate_command = 'gdal_translate {bil_name} {geotiff_file}'.format(bil_name=bil_file, geotiff_file=geotiff_file)
+    print(gdal_translate_command)
+    os.system(gdal_translate_command)
+
