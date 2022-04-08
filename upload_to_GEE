@@ -1,0 +1,37 @@
+import numpy as np
+import pandas as pd
+import os
+import glob
+import datetime
+
+#senorge sd products
+# Note: need to redownload because this cuts off part of Norway
+sd_files = '/Users/cmbreen/Documents/snowDepth_senorge/seNorge_Met_daily'
+
+#CGF products
+#CGF_files = '/Users/cmbreen/Documents/MODIS_CGF_Jan2018-Jan2020_Tifs'
+
+sd_filesDir = os.path.normpath(sd_files)
+
+
+sd_files_List = glob.glob(sd_files+'/**/*.tif', recursive=True)
+
+print('Found {} MODIS files in "{}"'.format(len(sd_files_List),sd_files))
+
+#####check this
+
+
+for tif_file in sd_files_List:
+    #print(tif_file)
+    assetname=tif_file.split('/')[6].split('.')[0]
+    print(assetname)
+    dateRaw = assetname.split("_",1)[1]
+    date = dateRaw.replace("_","-")
+    assetnametif= assetname+'.tif'
+    #print(date)
+    #earthengine_command = 'gdalwarp {sds_name} {geotiff_file} -of Gtiff -ot Float32 -t_srs \'EPSG:4326\''.format(sds_name=sds_name, geotiff_file=geotiff_file)
+    earthengine_command = 'earthengine upload image --crs=EPSG:32633 --time_start={date} --asset_id=users/catherinembreen/senorge_snowdepth/{assetname} gs://modisdata/seNorge_Met_daily/{assetnametif}'.format(assetname=assetname, date=date, assetnametif=assetnametif)
+    print(earthengine_command)
+    os.system(earthengine_command)
+
+print('done')
